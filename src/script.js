@@ -33,7 +33,7 @@ matcapTexture.colorSpace = THREE.SRGBColorSpace
 const fontLoader = new FontLoader()
 fontLoader.load('/fonts/helvetiker_regular.typeface.json',
     (font) => {
-        const textGeometry = new TextGeometry('Happy Birthday Anh Phúc nha <3 <3', {
+        const textGeometry = new TextGeometry('Happy Birthday <3 <3', {
             font,
             size: 0.5,
             depth: 0.2,
@@ -42,7 +42,7 @@ fontLoader.load('/fonts/helvetiker_regular.typeface.json',
             bevelThickness: 0.03,
             bevelSize: 0.02,
             bevelOffset: 0,
-            bevelSegmentsnha
+            bevelSegments: 5
         })
         const textMaterial = new THREE.MeshMatcapMaterial({matcap: matcapTexture})
         const chocolateMaterial = new THREE.MeshStandardMaterial({map: chocolateTexture})
