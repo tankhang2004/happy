@@ -8,6 +8,39 @@ import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js'
  * Base
  */
 // Debug
+// Create a loading manager
+const loadingManager = new THREE.LoadingManager();
+
+// Show loading screen
+const loadingScreen = document.createElement('div');
+loadingScreen.style.position = 'fixed';
+loadingScreen.style.top = '0';
+loadingScreen.style.left = '0';
+loadingScreen.style.width = '100%';
+loadingScreen.style.height = '100%';
+loadingScreen.style.backgroundColor = '#000';
+loadingScreen.style.color = '#fff';
+loadingScreen.style.display = 'flex';
+loadingScreen.style.justifyContent = 'center';
+loadingScreen.style.alignItems = 'center';
+loadingScreen.style.fontSize = '24px';
+loadingScreen.innerText = 'Loading...';
+document.body.appendChild(loadingScreen);
+
+// Hide loading screen when all assets are loaded
+loadingManager.onLoad = () => {
+    loadingScreen.style.display = 'none';
+};
+
+// Update loading progress
+loadingManager.onProgress = (url, itemsLoaded, itemsTotal) => {
+    loadingScreen.innerText = `Loading... (${itemsLoaded}/${itemsTotal})`;
+};
+
+// Handle errors
+loadingManager.onError = (url) => {
+    console.error(`There was an error loading ${url}`);
+};
 const gui = new GUI()
 
 // Canvas
@@ -30,10 +63,12 @@ matcapTexture.colorSpace = THREE.SRGBColorSpace
 /**
  * Fonts
  */
-const fontLoader = new FontLoader()
+
+const gltfLoader = new GLTFLoader(loadingManager)
+const fontLoader = new FontLoader(loadingManager)
 fontLoader.load('/fonts/helvetiker_regular.typeface.json',
     (font) => {
-        const textGeometry = new TextGeometry('Happy Birthday <3 <3', {
+        const textGeometry = new TextGeometry('Happy Birthday a Phúc <3 <3', {
             font,
             size: 0.5,
             depth: 0.2,
@@ -72,7 +107,6 @@ fontLoader.load('/fonts/helvetiker_regular.typeface.json',
             
         // }
         // console.timeEnd('donuts')
-        const gltfLoader = new GLTFLoader()
         gltfLoader.load('/models/birthday_cake.glb', (gltf) => {
             const cakeModel = gltf.scene
             console.time('cakes')
