@@ -27,9 +27,35 @@ loadingScreen.style.fontSize = '24px';
 loadingScreen.innerText = 'Loading...';
 document.body.appendChild(loadingScreen);
 
+
+// Add spinner
+const spinner = document.createElement('div');
+spinner.style.border = '8px solid #f3f3f3';
+spinner.style.borderTop = '8px solid #3498db';
+spinner.style.borderRadius = '50%';
+spinner.style.width = '50px';
+spinner.style.height = '50px';
+spinner.style.animation = 'spin 1s linear infinite';
+loadingScreen.appendChild(spinner);
+
+
+// Add spinner animation (CSS)
+const style = document.createElement('style');
+style.innerHTML = `
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+`;
+document.head.appendChild(style);
 // Hide loading screen when all assets are loaded
 loadingManager.onLoad = () => {
-    loadingScreen.style.display = 'none';
+    // loadingScreen.style.display = 'none';
+    loadingScreen.style.transition = 'opacity 0.5s';
+    loadingScreen.style.opacity = '0';
+    setTimeout(() => {
+        loadingScreen.style.display = 'none';
+    }, 500);
 };
 
 // Update loading progress
@@ -68,7 +94,7 @@ const gltfLoader = new GLTFLoader(loadingManager)
 const fontLoader = new FontLoader(loadingManager)
 fontLoader.load('/fonts/helvetiker_regular.typeface.json',
     (font) => {
-        const textGeometry = new TextGeometry('Happy Birthday a Phúc <3 <3', {
+        const textGeometry = new TextGeometry('Happy Birthday <3 <3', {
             font,
             size: 0.5,
             depth: 0.2,
@@ -111,7 +137,7 @@ fontLoader.load('/fonts/helvetiker_regular.typeface.json',
             const cakeModel = gltf.scene
             console.time('cakes')
         
-            for (let i = 0; i < 300; i++) {
+            for (let i = 0; i < 200; i++) {
                 const cake = cakeModel.clone()
         
                 // Randomize position
@@ -199,7 +225,12 @@ const clock = new THREE.Clock()
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
-
+     // Camera zoom-in animation
+    const zoomDuration = 3; // Duration of the zoom-in animation in seconds
+     if (elapsedTime < zoomDuration) {
+         const progress = elapsedTime / zoomDuration; // Progress from 0 to 1
+         camera.position.z = 20 - (18 * progress); // Start at z = 20, end at z = 2
+     }
     // Update controls
     controls.update()
 
